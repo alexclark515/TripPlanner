@@ -73,11 +73,24 @@ public class NewTrip extends Activity implements OnClickListener {
 
 		// If Save Button is clicked.
 		case R.id.btnSaveNT:	
-			this.saveTrip();
-			Toast.makeText(
-					this,
-					"You clicked the " + btnSave.getText().toString()
-							+ " Button.", Toast.LENGTH_SHORT).show();
+			
+			//Get the trip information from the EditTexts
+			String name = tripName.toString();
+			String dest = destination.toString();
+			String sDate = startDate.toString();
+			String eDate = endDate.toString();
+			
+			//Create a trip object
+			Trip newTrip = new Trip(name,dest,sDate,eDate);
+			
+			//Clear the EditTexts
+			tripName.setText("");
+			destination.setText("");
+			startDate.setText("");
+			endDate.setText("");
+			
+			//Save the newly created trip to the SQLLite Database. 
+			helper.addTrip(newTrip);		
 			break;
 
 		// If Packing List Button is clicked.
