@@ -75,10 +75,10 @@ public class NewTrip extends Activity implements OnClickListener {
 		case R.id.btnSaveNT:	
 			
 			//Get the trip information from the EditTexts
-			String name = tripName.toString();
-			String dest = destination.toString();
-			String sDate = startDate.toString();
-			String eDate = endDate.toString();
+			String name = tripName.getText().toString();
+			String dest = destination.getText().toString();
+			String sDate = startDate.getText().toString();
+			String eDate = endDate.getText().toString();
 			
 			//Create a trip object
 			Trip newTrip = new Trip(name,dest,sDate,eDate);
