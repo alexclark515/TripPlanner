@@ -2,133 +2,25 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" 
-    android:background="#FFFFFF">
+    android:orientation="vertical" >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:textSize="25sp"
-        android:text="@string/app_title" />
     
-    <TextView 
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:textSize="15sp"
-        android:text="@string/next_trip"/>
-    
-    <!-- This is the main body including "Next Trip" and Buttons -->
-	<LinearLayout
-	    android:layout_width="match_parent"
-	    android:layout_height="match_parent"
-	    android:orientation="vertical">
-        
-        <!-- This is the TextView to display the next trip -->
-        <TextView
-            android:id="@+id/viewNextTrip"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"  
-            android:layout_weight="3"
-            android:background="#909093"
-            android:text="This is where the next trip will go">           
-        </TextView>
-        
-        <!-- This is the parent Layout which contains the six buttons -->
-        <LinearLayout
-	    	android:layout_width="match_parent"
-	    	android:layout_height="match_parent"
-	    	android:layout_weight="1"
-	    	android:orientation="vertical"
-	    	>
-	    	
-	    	<!-- This layout is for buttons in row 1 -->
-	    	<LinearLayout
-	    		android:layout_width="match_parent"
-	    		android:layout_height="match_parent"
-	    		android:layout_weight="1"
-	    		android:orientation="horizontal">
-	    		
-	    	    <Button
-	    	        android:id="@+id/btnPlanATrip"
-	    	        android:layout_width="match_parent"
-	    	        android:layout_height="match_parent"
-	    	        android:layout_weight="1"
-	    	        android:layout_margin="4dp"
-	    	        android:text="@string/plan_a_trip">      
-	    	        
-	    	    </Button>
-	    	    <Button
-	    	        android:id="@+id/btnTripHistory"
-	    	        android:layout_width="match_parent"
-	    	        android:layout_height="match_parent"
-	    	        android:layout_weight="1"
-	    	        android:layout_margin="4dp"
-	    	        android:text="@string/trip_history">"
-	    	        
-	    	    </Button>
-            
-            
-        	</LinearLayout>
-        	
-	    	<!-- This layout is for buttons in row 2 -->
-	    	<LinearLayout
-	    		android:layout_width="match_parent"
-	    		android:layout_height="match_parent"
-	    		android:layout_weight="1">
-	    	    <Button
-	    	        android:id="@+id/btnViewMap"
-	    	        android:layout_width="match_parent"
-	    	        android:layout_height="match_parent"
-	    	        android:layout_weight="1"
-	    	        android:layout_margin="4dp"
-	    	        android:text="@string/view_map">	    	        
-	    	    </Button>
-	    	    <Button
-	    	        android:id="@+id/btnViewAlerts"
-	    	        android:layout_width="match_parent"
-	    	        android:layout_height="match_parent"
-	    	        android:layout_weight="1"
-	    	        android:layout_margin="4dp"
-	    	        android:text="@string/view_alerts">	    	        
-	    	    </Button>
-            
-            
-        	</LinearLayout>
-        	
-        	<!-- This layout is for buttons in row 3 -->
-	    	<LinearLayout
-	    		android:layout_width="match_parent"
-	    		android:layout_height="match_parent"
-	    		android:layout_weight="1"
-	    		android:layout_margin="4dp">
-	    	    
-	    	    <Button
-	    	        android:id="@+id/btnGoogleSearch"
-	    	        android:layout_width="match_parent"
-	    	        android:layout_height="match_parent"
-	    	        android:layout_weight="1"
-	    	        android:layout_margin="4dp"
-	    	        android:text="@string/google_search">      
-	    	        
-	    	    </Button>
-	    	    <Button
-	    	        android:id="@+id/btnSaveLocation"
-	    	        android:layout_width="match_parent"
-	    	        android:layout_height="match_parent"
-	    	        android:layout_weight="1"
-	    	        android:layout_margin="4dp"
-	    	        android:text="@string/save_location">	    	        
-	    	    </Button>
-            
-            
-        	</LinearLayout>
-            
-            
-        </LinearLayout>
-        
-    </LinearLayout>
-
-
+     <TextView
+     	android:id="@+id/tripList"
+     	android:text="Trip List"
+     	android:layout_width="wrap_content"
+     	android:layout_height="wrap_content"
+     	android:layout_gravity="center_horizontal"
+     	android:textSize="25sp"
+     	android:textStyle="bold" />
+         
+ 	<ListView
+    	android:id="@android:id/list"
+    	android:layout_width="match_parent"
+    	android:layout_height="match_parent"
+    	android:drawSelectorOnTop="false"
+    	android:focusable="true"
+       	android:focusableInTouchMode="true"
+       	android:choiceMode="singleChoice"/>
+  		
 </LinearLayout>
