@@ -24,6 +24,10 @@ public class MainActivity extends Activity implements OnClickListener {
 	private Button saveLocation;
 	
 	final int PICK1 = Menu.FIRST + 1;
+	final int PICK2 = Menu.FIRST + 2;
+	final int PICK3 = Menu.FIRST + 3;
+	final int PICK4 = Menu.FIRST + 4;
+	final int PICK5 = Menu.FIRST + 5;
 	
 
 	@Override
@@ -101,7 +105,12 @@ public class MainActivity extends Activity implements OnClickListener {
 	//Creates the Options Menu
 	public boolean onCreateOptionsMenu(Menu menu){
 		super.onCreateOptionsMenu(menu);
-		MenuItem item1 = menu.add(0,PICK1,Menu.NONE,"Plan Trip");
+		MenuItem item1 = menu.add(0,PICK1,Menu.NONE,"New Trip");
+		MenuItem item2 = menu.add(0,PICK2,Menu.NONE, "View Trip");
+		MenuItem item3 = menu.add(0,PICK3,Menu.NONE, "View Map");
+		MenuItem item4 = menu.add(0,PICK4,Menu.NONE, "Search Google");
+		MenuItem item5 = menu.add(0,PICK5,Menu.NONE, "View Alerts");
+		
 		
 		return true;
 	}
@@ -113,8 +122,19 @@ public class MainActivity extends Activity implements OnClickListener {
 		switch (itemId){
 		
 		case PICK1:
-			startActivity(new Intent (this,NewTrip.class));
+			startActivity(new Intent (this,NewTrip.class));		
+			return true;
 		
+		case PICK2:
+			return true;
+			
+		case PICK3:
+			return true;
+		
+		case PICK4:
+			return true;
+			
+		case PICK5:
 			return true;
 		}
 		return false;
