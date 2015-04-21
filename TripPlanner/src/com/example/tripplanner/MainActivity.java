@@ -23,6 +23,8 @@ public class MainActivity extends Activity implements OnClickListener {
 	private Button googleSearch;
 	private Button saveLocation;
 	
+	final int PICK1 = Menu.FIRST + 1;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -94,5 +96,27 @@ public class MainActivity extends Activity implements OnClickListener {
 	    }
 		
 		
+	}
+	
+	//Creates the Options Menu
+	public boolean onCreateOptionsMenu(Menu menu){
+		super.onCreateOptionsMenu(menu);
+		MenuItem item1 = menu.add(0,PICK1,Menu.NONE,"Plan Trip");
+		
+		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item){
+		int itemId = item.getItemId();
+		
+		switch (itemId){
+		
+		case PICK1:
+			startActivity(new Intent (this,NewTrip.class));
+		
+			return true;
+		}
+		return false;
 	}
 }
