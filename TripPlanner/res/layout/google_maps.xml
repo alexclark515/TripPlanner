@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	
+	<LinearLayout 
+	    android:id="@+id/line"
+    	android:orientation="horizontal"
+    	android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		>
+		
+		<EditText
+			android:id="@+id/myAddress"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="4"
+			android:hint="enter location"
+			android:textSize="18dp"
+		>
+		</EditText>
+		
+		<Button
+			android:id="@+id/myBtnSearch"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="Go"
+		>
+		</Button>
+	</LinearLayout>
+
+	<fragment
+	      android:id="@+id/map"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_below="@+id/line"
+          android:name="com.google.android.gms.maps.MapFragment"
+          />
+	</RelativeLayout>

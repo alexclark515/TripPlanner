@@ -129,9 +129,16 @@ public class MainActivity extends Activity implements OnClickListener {
 			return true;
 			
 		case PICK3:
+			startActivity(new Intent (this, GoogleMaps.class));
+			Toast.makeText(this,"Long tap to add marker",Toast.LENGTH_LONG)
+			.show();
 			return true;
 		
 		case PICK4:
+			startActivity(new Intent(this,GoogleSearch.class));
+			Toast.makeText(this,"You clicked the " + 
+					googleSearch.getText().toString()+ " Button.",Toast.LENGTH_LONG)
+		.show();
 			return true;
 			
 		case PICK5:
