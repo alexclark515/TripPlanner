@@ -1,18 +1,22 @@
 package com.example.tripplanner;
 
 
+import java.util.ArrayList;
+
 import android.app.Activity;
+import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity implements OnClickListener {
+public class MainActivity extends ListActivity {
 	
 	//Declare variables for widgets
 	private TextView viewNextTrip;
@@ -29,77 +33,22 @@ public class MainActivity extends Activity implements OnClickListener {
 	final int PICK4 = Menu.FIRST + 4;
 	final int PICK5 = Menu.FIRST + 5;
 	
+	ArrayList<String> trips = new ArrayList<String>();
+	ArrayAdapter<String> aa;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		//Link Java variables with xml widgets
-		//Set OnClickListener on Buttons
-		viewNextTrip = (TextView) findViewById(R.id.viewNextTrip);
-		planATrip = (Button) findViewById(R.id.btnPlanATrip);
-		planATrip.setOnClickListener(this);
-		tripHistory = (Button) findViewById(R.id.btnTripHistory);
-		tripHistory.setOnClickListener(this);
-		viewMap = (Button) findViewById(R.id.btnViewMap);
-		viewMap.setOnClickListener(this);
-		viewAlerts = (Button) findViewById(R.id.btnViewAlerts);
-		viewAlerts.setOnClickListener(this);
-		googleSearch = (Button) findViewById(R.id.btnGoogleSearch);
-		googleSearch.setOnClickListener(this);
-		saveLocation = (Button) findViewById(R.id.btnSaveLocation);
-		saveLocation.setOnClickListener(this);
-	}
+		aa = new ArrayAdapter<String>(
+				this,
+				android.R.layout.simple_list_item_single_choice,
+				trips);
+		
+		setListAdapter(aa);		
 
-
-	@Override
-	public void onClick(View v) {
-	    //Currently test code to make sure buttons are working.   
-		switch(v.getId()){
-		
-		//If Plan a Trip Button is clicked. 
-		case R.id.btnPlanATrip:
-			startActivity(new Intent (this,NewTrip.class));
-		break;
-		
-		//If Trip History Button is clicked. 
-		case R.id.btnTripHistory:
-			Toast.makeText(this,"You clicked the " + 
-					tripHistory.getText().toString()+ " Button.",Toast.LENGTH_LONG)
-			.show();
-		break;
-		
-		//If View Map Button is clicked. 
-		case R.id.btnViewMap:
-			Toast.makeText(this,"You clicked the " + 
-					viewMap.getText().toString()+ " Button.",Toast.LENGTH_LONG)
-			.show();
-		break;
-		
-		//If View Alerts is clicked. 
-		case R.id.btnViewAlerts:
-			Toast.makeText(this,"You clicked the " + 
-					viewAlerts.getText().toString()+ " Button.",Toast.LENGTH_LONG)
-			.show();
-		break;
-		
-		//If Google Search Button is clicked. 
-		case R.id.btnGoogleSearch:
-		Toast.makeText(this,"You clicked the " + 
-				googleSearch.getText().toString()+ " Button.",Toast.LENGTH_LONG)
-		.show();
-		break;
-		
-		//If Save Location Button is clicked. 
-		case R.id.btnSaveLocation:
-			Toast.makeText(this,"You clicked the " + 
-					saveLocation.getText().toString()+ " Button.",Toast.LENGTH_LONG)
-			.show();
-		break;	      
-	    }
-		
-		
 	}
 	
 	//Creates the Options Menu
@@ -109,8 +58,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		MenuItem item2 = menu.add(0,PICK2,Menu.NONE, "View Trip");
 		MenuItem item3 = menu.add(0,PICK3,Menu.NONE, "View Map");
 		MenuItem item4 = menu.add(0,PICK4,Menu.NONE, "Search Google");
-		MenuItem item5 = menu.add(0,PICK5,Menu.NONE, "View Alerts");
-		
+		MenuItem item5 = menu.add(0,PICK5,Menu.NONE, "View Alerts");	
 		
 		return true;
 	}
@@ -121,27 +69,32 @@ public class MainActivity extends Activity implements OnClickListener {
 		
 		switch (itemId){
 		
+		//New Trip
 		case PICK1:
 			startActivity(new Intent (this,NewTrip.class));		
 			return true;
-		
-		case PICK2:
+		//View Trip
+		case PICK2:	
 			return true;
-			
+		//View Map	
 		case PICK3:
 			startActivity(new Intent (this, GoogleMaps.class));
 			Toast.makeText(this,"Long tap to add marker",Toast.LENGTH_LONG)
 			.show();
 			return true;
-		
+		//Search Google
 		case PICK4:
 			startActivity(new Intent(this,GoogleSearch.class));
 			Toast.makeText(this,"You clicked the " + 
 					googleSearch.getText().toString()+ " Button.",Toast.LENGTH_LONG)
 		.show();
 			return true;
-			
+		//View Alerts [CURRENTLY JUST ADDING TRIPS]	
 		case PICK5:
+			for(int i = 0; i <15; i++){
+				trips.add("Test List Items " + i);
+			}		
+			aa.notifyDataSetChanged();
 			return true;
 		}
 		return false;
