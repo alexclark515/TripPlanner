@@ -13,6 +13,7 @@ public class TripListItem {
 		this.text = text;
 		this.table = list.getTable();
 		this.trip = list.getTrip();
+		list.add(this);
 	}
 	
 	public TripListItem(TripList list, String text, boolean checked){

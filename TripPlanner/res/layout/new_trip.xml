@@ -44,7 +44,8 @@
             android:id="@+id/startDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#FFFFFF" 
+            android:background="#FFFFFF"
+            android:focusable="false"
             >
        </EditText>
        
@@ -58,6 +59,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#FFFFFF" 
+            android:focusable="false"
          >
         </EditText>
 

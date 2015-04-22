@@ -4,6 +4,7 @@ package com.example.tripplanner;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.KeyEvent;
@@ -20,16 +21,29 @@ import android.widget.Toast;
 import android.app.ListActivity;
 
 public class PackingList extends ListActivity {
+	private SQLHelper helper;
+	private SQLiteDatabase db;
+	private Trip activeTrip;
+	private PackList packList;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.packing_list);
-
+		helper = new SQLHelper(this);
+		
+		Bundle extras = getIntent().getExtras();
+		if (extras != null) {
+		    activeTrip = helper.getTripByName(extras.getString("Trip"));
+		}
+		
+		//Dummy Code
+		packList = new PackList(activeTrip);
+		TripListItem x = new TripListItem(packList, "Socks");
+		TripListItem y = new TripListItem(packList, "Shirts");
+		Toast.makeText(this, x.getText(), Toast.LENGTH_SHORT).show();
+		/****************************************************************/
 	}
-
-	/***
-	 * INSERT CODE HERE. The code here will populate the list view widget. Use
-	 * the methods in the helper class to load the list from the database.
-	 */
+	
+	
 }

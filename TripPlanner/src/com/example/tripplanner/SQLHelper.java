@@ -1,5 +1,7 @@
 package com.example.tripplanner;
 
+import java.util.ArrayList;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -11,7 +13,7 @@ import android.widget.Toast;
 public class SQLHelper extends SQLiteOpenHelper {
 
 	public static final String DATABASE_NAME = "trip.db";
-	public static final int DATABASE_VERSION = 1;
+	public static final int DATABASE_VERSION = 20;
 	public static final String TBL_TRIP = "trip";
 	public static final String TBL_ALERT = "alert";
 	public static final String TBL_PACK = "pack";
@@ -176,8 +178,30 @@ public class SQLHelper extends SQLiteOpenHelper {
 
 		return unique;
 	}
+	
+	// Returns a Trip object by name from the database
+	public Trip getTripByName(String name) {
+		String[] args = new String[5];
+		Cursor cursor;
+		SQLiteDatabase dbRead = this.getReadableDatabase();
+		String sql;
 
-	// Returns a Trip object from the database
+		sql = "select * from " + TBL_TRIP + " where name = " + name + ";";
+		cursor = dbRead.rawQuery(sql, null);
+		cursor.moveToFirst();
+
+		for (int i = 0; i < 5; i++) {
+			args[i] = cursor.getString(i);
+		}
+
+		dbRead.close();
+		Trip trip = new Trip(args);
+
+		return trip;
+	}
+	
+
+	// Returns a Trip object by id from the database
 	public Trip getTripByID(int id) {
 		String[] args = new String[5];
 		Cursor cursor;
@@ -197,6 +221,23 @@ public class SQLHelper extends SQLiteOpenHelper {
 
 		return trip;
 	}
+	
+	 public ArrayList<Trip> getTrips() {
+         ArrayList<Trip> trips = new ArrayList<Trip>();
+         Cursor cursor;
+         SQLiteDatabase dbRead = this.getReadableDatabase();
+         String sql = "select * from " + TBL_TRIP;
+
+         cursor = dbRead.rawQuery(sql, null);
+         cursor.moveToFirst();
+
+         for (int i = 0; i < cursor.getCount(); i++) {
+                 trips.add(this.getTripByID(Integer.parseInt(cursor.getString(0))));
+                 cursor.moveToNext();
+         }
+
+         return trips;
+ }
 
 	public void loadPackList(Trip trip) {
 		Cursor cursor;
