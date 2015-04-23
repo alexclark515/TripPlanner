@@ -21,35 +21,35 @@ import android.widget.Toast;
 public class NewTrip extends Activity implements OnClickListener {
 
 	// Declare variables for widgets
-	private EditText tripName;
-	private EditText destination;
-	private EditText startDate;
-	private EditText endDate;
+	protected EditText tripName;
+	protected EditText destination;
+	protected EditText startDate;
+	protected EditText endDate;
 	private Button btnCancel;
 	private Button btnSave;
 	private Button btnPackingList;
 	private Button btnToDoList;
-	private SQLHelper helper;
+	protected SQLHelper helper;
 	private SQLiteDatabase db;
-	private Trip newTrip;
+	protected Trip activeTrip;
 	private Calendar cal = Calendar.getInstance();
 	private int dateType;
-	private String sqlStartDate;
-	private String sqlEndDate;
+	protected String sqlStartDate;
+	protected String sqlEndDate;
 	private Intent packList;
 
 	// This format should be used for showing in the edit text
-	private SimpleDateFormat date_fmt = new SimpleDateFormat("EEE, MMM d, yyyy");
+	protected SimpleDateFormat date_fmt = new SimpleDateFormat(
+			"EEE, MMM d, yyyy");
 
 	// This format should be used for writing to the database
-	private SimpleDateFormat date_fmt2 = new SimpleDateFormat("yyyy-MM-dd");
+	protected SimpleDateFormat date_fmt2 = new SimpleDateFormat("yyyy-MM-dd");
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.new_trip);
-		packList = new Intent(this, PackingList.class);
 
 		// Link Java variables with xml widgets
 		// Set OnClickListener on Buttons
@@ -84,11 +84,15 @@ public class NewTrip extends Activity implements OnClickListener {
 						// start date
 						// If it's 1 it writes to the end date
 						if (dateType == 0) {
-							startDate.setText(date_fmt.format(cal.getTime()));
-							sqlStartDate = (date_fmt2.format(cal.getTime()));
+							NewTrip.this.startDate.setText(date_fmt.format(cal
+									.getTime()));
+							NewTrip.this.sqlStartDate = (date_fmt2.format(cal
+									.getTime()));
 						} else {
-							endDate.setText(date_fmt.format(cal.getTime()));
-							sqlEndDate = (date_fmt2.format(cal.getTime()));
+							NewTrip.this.endDate.setText(date_fmt.format(cal
+									.getTime()));
+							NewTrip.this.sqlEndDate = (date_fmt2.format(cal
+									.getTime()));
 						}
 
 					}
@@ -134,20 +138,12 @@ public class NewTrip extends Activity implements OnClickListener {
 
 		// If Save Button is clicked.
 		case R.id.btnSaveNT:
-			this.saveTrip();
+			this.saveTrip(true);
 			break;
 
 		// If Packing List Button is clicked.
 		case R.id.btnPackingListNT:
-
-			if (newTrip != null) {
-				// Pass Trip name to NewTrip Class if there is a new trip
-				packList.putExtra("Trip", newTrip.getName());
-				startActivity(new Intent(this, PackingList.class));
-			} else {
-				Toast.makeText(NewTrip.this, "No Trip Selected",
-						Toast.LENGTH_SHORT).show();
-			}
+			this.goToPackList();
 			break;
 
 		// If To Do List Button is clicked.
@@ -162,21 +158,25 @@ public class NewTrip extends Activity implements OnClickListener {
 	}
 
 	// Method to save data to SQLite database
-	public void saveTrip() {
+	public void saveTrip(boolean toast) {
 		String msg = "All Fields Required";
 		String msg2 = "Please choose a unique trip name";
 		String name = tripName.getText().toString();
 		String dest = destination.getText().toString();
-		String start = startDate.getText().toString();
-		String end = endDate.getText().toString();
 
-		if (!(name.equals("") || dest.equals("") || start.equals("") || end
-				.equals(""))) {
+		if (isComplete()) {
+			NewTrip.this.activeTrip = new Trip(name, dest, sqlStartDate,
+					sqlEndDate);
 
-			newTrip = new Trip(name, dest, sqlStartDate, sqlEndDate);
-
-			if (helper.isUnique(newTrip)) {
-				helper.addTrip(newTrip);
+			if (helper.isUnique(activeTrip)) {
+				helper.addTrip(activeTrip);
+				if (toast) {
+					Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+				}
+				Intent intent = new Intent(this, ViewTrip.class);
+				intent.putExtra("trip_name", activeTrip.getName());
+				intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+				startActivity(intent);
 			} else {
 				Toast.makeText(NewTrip.this, msg2, Toast.LENGTH_LONG).show();
 			}
@@ -186,29 +186,40 @@ public class NewTrip extends Activity implements OnClickListener {
 		}
 	}
 
-	/***************
-	 * Example code for creating trips and lists, and list
-	 * items****************************************** Trip trip = new
-	 * Trip("Peru", "Arequipa", "2015-06-01", "2015-07-01"); Trip trip2 = new
-	 * Trip("Nepal", "Kathmandu", "2016-10-01", "2016-11-01");
-	 * 
-	 * //Save Trip to DB helper.addTrip(trip); helper.addTrip(trip2);
-	 * 
-	 * TripList todo = new ToDoList(trip);
-	 * 
-	 * TripListItem item1 = new TripListItem(todo, "Climb a mountain");
-	 * TripListItem item2 = new TripListItem(todo, "Rock Climb"); TripListItem
-	 * item3 = new TripListItem(todo, "Ice Climb");
-	 * 
-	 * todo.add(item1); todo.add(item2); todo.add(item3);
-	 * 
-	 * helper.saveList(todo);
-	 * 
-	 * todo.remove(1); helper.saveList(todo); Trip trip =
-	 * helper.getTripByID(10);
-	 * 
-	 * Trip trip = helper.getTripByID(10); helper.loadToDoList(trip); ToDoList
-	 * todo = trip.getToDoList(); for (TripListItem i : todo){
-	 * Toast.makeText(this,i.toString(), Toast.LENGTH_LONG).show();}
-	 *******************************************************************/
+	public boolean isComplete() {
+		boolean complete = false;
+		String name = tripName.getText().toString();
+		String dest = destination.getText().toString();
+		String start = startDate.getText().toString();
+		String end = endDate.getText().toString();
+
+		if (!(name.equals("") || dest.equals("") || start.equals("") || end
+				.equals(""))) {
+			complete = true;
+		}
+		return complete;
+
+	}
+
+	public String getSQLStartDate() {
+		return this.sqlStartDate;
+	}
+
+	public String getSQLEndDate() {
+		return this.sqlEndDate;
+	}
+
+	public void goToPackList() {
+		if (isComplete()) {
+			this.saveTrip(false);
+			Intent intent = new Intent(this, PackingList.class);
+			intent.putExtra("trip_id",
+					Integer.toString(NewTrip.this.activeTrip.getID()));
+			startActivity(intent);
+		} else {
+			Toast.makeText(NewTrip.this, "All Fields Required",
+					Toast.LENGTH_SHORT).show();
+		}
+	}
+
 }

@@ -31,9 +31,9 @@ public class MainActivity extends ListActivity {
 	private Button googleSearch;
 	private Button saveLocation;
 	private SQLHelper helper;
+	private PackList packList;
 	private SQLiteDatabase db;
-	private String selectedTripName;
-	private Trip selectedTrip;
+	private static String selectedTripName = "";
 	private Calendar cal = Calendar.getInstance();
 
 	final int PICK1 = Menu.FIRST + 1;
@@ -48,7 +48,7 @@ public class MainActivity extends ListActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		final Intent newTrip = new Intent(this, ViewTrip.class);
+
 		helper = new SQLHelper(this);
 		setContentView(R.layout.activity_main);
 		aa = new ArrayAdapter<String>(this,
@@ -71,6 +71,13 @@ public class MainActivity extends ListActivity {
 		helper.addTrip(trip);
 		helper.addTrip(trip2);
 		helper.addTrip(trip3);
+		this.packList = new PackList(trip);
+
+		TripListItem item1 = new TripListItem(this.packList, "Shoes");
+		TripListItem item2 = new TripListItem(this.packList, "Boots");
+		TripListItem item3 = new TripListItem(this.packList, "Rope", true);
+
+		helper.saveList(this.packList);
 		// ******************************************************/
 
 		this.refreshList();
@@ -100,6 +107,11 @@ public class MainActivity extends ListActivity {
 			return true;
 			// View Trip
 		case PICK2:
+			if (!(MainActivity.selectedTripName.equals(""))) {
+				Intent intent = new Intent(this, ViewTrip.class);
+				intent.putExtra("trip_name", selectedTripName);
+				startActivity(intent);
+			}
 			return true;
 			// View Map
 		case PICK3:
@@ -131,8 +143,6 @@ public class MainActivity extends ListActivity {
 		super.onListItemClick(l, v, position, id);
 		Object object = this.getListAdapter().getItem(position);
 		selectedTripName = (String) object;
-		Toast.makeText(MainActivity.this, selectedTripName, Toast.LENGTH_LONG)
-				.show();
 	}
 
 	protected void onResume() {

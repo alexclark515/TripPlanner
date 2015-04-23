@@ -88,6 +88,25 @@ public class SQLHelper extends SQLiteOpenHelper {
 		trip.setTripID(this.getTripID(trip));
 	}
 
+	// Method used for updating an existing trip
+	public void updateTrip(Trip trip) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		String update = "update trip set ";
+		String where = " where id = " + trip.getID() + ";";
+
+		String sql1 = update + "name ='" + trip.getName() + "'" + where;
+		String sql2 = update + "destination = '" + trip.getDestination() + "'"
+				+ where;
+		String sql3 = update + "start_dt = '" + trip.getDateStart() + "'"
+				+ where;
+		String sql4 = update + "end_dt = '" + trip.getDateEnd() + "'" + where;
+
+		db.execSQL(sql1);
+		db.execSQL(sql2);
+		db.execSQL(sql3);
+		db.execSQL(sql4);
+	}
+
 	// This method is used for writing a list item to the database.
 	public void addListItem(TripListItem item, int index) {
 		SQLiteDatabase dbWrite = this.getWritableDatabase();
@@ -128,12 +147,11 @@ public class SQLHelper extends SQLiteOpenHelper {
 	// Method used to save a trip list. This method first deletes all objects
 	// for the TripList passed, then writes all items in the list
 	public void saveList(TripList list) {
-		TripList newList = list;
 
 		this.deleteItems(list);
-
-		for (int i = 0; i < newList.size(); i++) {
-			this.addListItem(newList.get(i), i + 1);
+		
+		for (int i = 0; i < list.size(); i++) {
+			this.addListItem(list.get(i), i + 1);
 
 		}
 
@@ -178,7 +196,7 @@ public class SQLHelper extends SQLiteOpenHelper {
 
 		return unique;
 	}
-	
+
 	// Returns a Trip object by name from the database
 	public Trip getTripByName(String name) {
 		String[] args = new String[5];
@@ -186,7 +204,7 @@ public class SQLHelper extends SQLiteOpenHelper {
 		SQLiteDatabase dbRead = this.getReadableDatabase();
 		String sql;
 
-		sql = "select * from " + TBL_TRIP + " where name = " + name + ";";
+		sql = "select * from " + TBL_TRIP + " where name = '" + name + "';";
 		cursor = dbRead.rawQuery(sql, null);
 		cursor.moveToFirst();
 
@@ -199,7 +217,6 @@ public class SQLHelper extends SQLiteOpenHelper {
 
 		return trip;
 	}
-	
 
 	// Returns a Trip object by id from the database
 	public Trip getTripByID(int id) {
@@ -221,25 +238,25 @@ public class SQLHelper extends SQLiteOpenHelper {
 
 		return trip;
 	}
-	
-	 public ArrayList<Trip> getTrips() {
-         ArrayList<Trip> trips = new ArrayList<Trip>();
-         Cursor cursor;
-         SQLiteDatabase dbRead = this.getReadableDatabase();
-         String sql = "select * from " + TBL_TRIP;
 
-         cursor = dbRead.rawQuery(sql, null);
-         cursor.moveToFirst();
+	public ArrayList<Trip> getTrips() {
+		ArrayList<Trip> trips = new ArrayList<Trip>();
+		Cursor cursor;
+		SQLiteDatabase dbRead = this.getReadableDatabase();
+		String sql = "select * from " + TBL_TRIP;
 
-         for (int i = 0; i < cursor.getCount(); i++) {
-                 trips.add(this.getTripByID(Integer.parseInt(cursor.getString(0))));
-                 cursor.moveToNext();
-         }
+		cursor = dbRead.rawQuery(sql, null);
+		cursor.moveToFirst();
 
-         return trips;
- }
+		for (int i = 0; i < cursor.getCount(); i++) {
+			trips.add(this.getTripByID(Integer.parseInt(cursor.getString(0))));
+			cursor.moveToNext();
+		}
 
-	public void loadPackList(Trip trip) {
+		return trips;
+	}
+
+	public PackList getPackList(Trip trip) {
 		Cursor cursor;
 		SQLiteDatabase dbRead = this.getReadableDatabase();
 		String sql;
@@ -259,16 +276,15 @@ public class SQLHelper extends SQLiteOpenHelper {
 				checked = true;
 			}
 
-			list.add(new TripListItem(list, text, checked));
+			TripListItem item = new TripListItem(list, text, checked);
 			cursor.moveToNext();
 		}
-		
-		trip.setPackList(list);
-		
+
+		return list;
 
 	}
 
-	public void loadToDoList(Trip trip) {
+	public ToDoList getToDoList(Trip trip) {
 		Cursor cursor;
 		SQLiteDatabase dbRead = this.getReadableDatabase();
 		String sql;
@@ -291,9 +307,8 @@ public class SQLHelper extends SQLiteOpenHelper {
 			list.add(new TripListItem(list, text, checked));
 			cursor.moveToNext();
 		}
-		
-		trip.setToDoList(list);
-		
+
+		return list;
 
 	}
 
