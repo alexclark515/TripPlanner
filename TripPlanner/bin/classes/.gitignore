@@ -1,2 +1,5 @@
 /com/
 /.gitignore
+/BuildConfig.java
+/Manifest.java
+/R.java
