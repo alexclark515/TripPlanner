@@ -41,6 +41,7 @@ public class MainActivity extends ListActivity {
 	final int PICK3 = Menu.FIRST + 3;
 	final int PICK4 = Menu.FIRST + 4;
 	final int PICK5 = Menu.FIRST + 5;
+	final int PICK6 = Menu.FIRST + 6;
 
 	ArrayList<String> trips = new ArrayList<String>();
 	ArrayAdapter<String> aa;
@@ -91,6 +92,7 @@ public class MainActivity extends ListActivity {
 		MenuItem item3 = menu.add(0, PICK3, Menu.NONE, "View Map");
 		MenuItem item4 = menu.add(0, PICK4, Menu.NONE, "Search Google");
 		MenuItem item5 = menu.add(0, PICK5, Menu.NONE, "View Alerts");
+		MenuItem item6 = menu.add(0, PICK6, Menu.NONE, "Delete Trip");
 
 		return true;
 	}
@@ -134,6 +136,9 @@ public class MainActivity extends ListActivity {
 			}
 			aa.notifyDataSetChanged();
 			return true;
+		
+		case PICK6: 
+			return true;	
 		}
 		return false;
 	}
