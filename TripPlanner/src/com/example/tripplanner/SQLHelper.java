@@ -144,12 +144,23 @@ public class SQLHelper extends SQLiteOpenHelper {
 		dbWrite.delete(table, whereClause, whereArgs);
 	}
 
+	public void deleteTrip(int id) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		String sql1 = "delete from trip where id = " + id + ";";
+		String sql2 = "delete from pack where trip_id = " + id + ";";
+		String sql3 = "delete from todo where trip_id = " + id + ";";
+		String args[] = { sql1, sql2, sql3 };
+		for (String s : args) {
+			db.execSQL(s);
+		}
+	}
+
 	// Method used to save a trip list. This method first deletes all objects
 	// for the TripList passed, then writes all items in the list
 	public void saveList(TripList list) {
 
 		this.deleteItems(list);
-		
+
 		for (int i = 0; i < list.size(); i++) {
 			this.addListItem(list.get(i), i + 1);
 
@@ -256,7 +267,7 @@ public class SQLHelper extends SQLiteOpenHelper {
 		return trips;
 	}
 
-	public PackList getPackList(Trip trip) {
+	public PackList loadPackList(Trip trip) {
 		Cursor cursor;
 		SQLiteDatabase dbRead = this.getReadableDatabase();
 		String sql;
@@ -276,7 +287,7 @@ public class SQLHelper extends SQLiteOpenHelper {
 				checked = true;
 			}
 
-			TripListItem item = new TripListItem(list, text, checked);
+			list.addItem(new TripListItem(text, checked));
 			cursor.moveToNext();
 		}
 
@@ -284,7 +295,7 @@ public class SQLHelper extends SQLiteOpenHelper {
 
 	}
 
-	public ToDoList getToDoList(Trip trip) {
+	public ToDoList loadToDoList(Trip trip) {
 		Cursor cursor;
 		SQLiteDatabase dbRead = this.getReadableDatabase();
 		String sql;
@@ -304,7 +315,7 @@ public class SQLHelper extends SQLiteOpenHelper {
 				checked = true;
 			}
 
-			list.add(new TripListItem(list, text, checked));
+			list.addItem(new TripListItem(text, checked));
 			cursor.moveToNext();
 		}
 

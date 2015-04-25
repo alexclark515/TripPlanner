@@ -43,6 +43,8 @@
             android:name=".GoogleSearch"
             android:label="@string/title_activity_google_search" >
         </activity>
+        <activity android:name=".Alerts" >
+        </activity>
     </application>
 
     <permission

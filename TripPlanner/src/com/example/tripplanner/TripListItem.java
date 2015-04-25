@@ -8,21 +8,21 @@ public class TripListItem {
 	private String table;
 	private int Index;
 
-	public TripListItem(TripList list, String text) {
-		this.list = list;
+	public TripListItem(String text) {
 		this.text = text;
-		this.table = list.getTable();
-		this.trip = list.getTrip();
-		list.add(this);
 	}
 	
-	public TripListItem(TripList list, String text, boolean checked){
-		this(list, text);
+	public TripListItem(String text, boolean checked){
+		this(text);
 		this.checked = checked;
 	}
 
 	public void setChecked() {
 		this.checked = true;
+	}
+	
+	public void setTripList(TripList t){
+		this.list = t;
 	}
 	
 	public void setUnChecked(){
@@ -64,5 +64,9 @@ public class TripListItem {
 	public boolean isChecked(){
 		return this.checked;
 	} 
+	
+	public void setTrip(Trip t){
+		this.trip = t;
+	}
 	
 }

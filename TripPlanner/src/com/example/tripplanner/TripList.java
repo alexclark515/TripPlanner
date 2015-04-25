@@ -12,6 +12,13 @@ public abstract class TripList extends ArrayList<TripListItem> {
 
 	public TripList() {
 	}
+	
+	public void addItem(TripListItem t){
+		this.add(t);
+		t.setTable(this.table);
+		t.setTrip(this.trip);
+		t.setTripList(this);
+	}
 
 	public void setTable(String table) {
 		this.table = table;

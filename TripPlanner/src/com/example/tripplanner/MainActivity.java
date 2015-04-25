@@ -74,9 +74,9 @@ public class MainActivity extends ListActivity {
 		helper.addTrip(trip3);
 		this.packList = new PackList(trip);
 
-		TripListItem item1 = new TripListItem(this.packList, "Shoes");
-		TripListItem item2 = new TripListItem(this.packList, "Boots");
-		TripListItem item3 = new TripListItem(this.packList, "Rope", true);
+		packList.addItem(new TripListItem("Shoes"));
+		packList.addItem(new TripListItem("Boots"));
+		packList.addItem(new TripListItem("Rope", true));
 
 		helper.saveList(this.packList);
 		// ******************************************************/
@@ -118,26 +118,24 @@ public class MainActivity extends ListActivity {
 			// View Map
 		case PICK3:
 			startActivity(new Intent(this, GoogleMaps.class));
-			Toast.makeText(this, "Long tap to add marker", Toast.LENGTH_LONG)
-					.show();
+			//Toast.makeText(this, "Long tap to add marker", Toast.LENGTH_LONG).show();
 			return true;
 			// Search Google
 		case PICK4:
 			startActivity(new Intent(this, GoogleSearch.class));
-			Toast.makeText(
-					this,
-					"You clicked the " + googleSearch.getText().toString()
-							+ " Button.", Toast.LENGTH_LONG).show();
 			return true;
 			// View Alerts [CURRENTLY JUST ADDING TRIPS]
 		case PICK5:
-			for (int i = 0; i < 15; i++) {
-				trips.add("Test List Items " + i);
-			}
-			aa.notifyDataSetChanged();
+			startActivity(new Intent(this, Alerts.class));
 			return true;
 		
-		case PICK6: 
+		case PICK6:
+			if (!(MainActivity.selectedTripName.equals(""))) {
+				Trip t = helper.getTripByName(selectedTripName);
+				helper.deleteTrip(t.getID());
+				this.refreshList();
+				selectedTripName = "";
+			}
 			return true;	
 		}
 		return false;
