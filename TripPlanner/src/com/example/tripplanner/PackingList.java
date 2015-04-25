@@ -13,6 +13,7 @@ import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
 import android.text.InputType;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -47,10 +48,12 @@ public class PackingList extends ListActivity implements OnClickListener,
 	private Button btnAdd;
 	private AdapterView.AdapterContextMenuInfo acmi;
 	private int selectedPos;
+	protected Bundle extras;
 	protected TextView title;
 	private boolean isNewItem = true;
-	
-	public void setList(Trip t){
+	ListView list;
+
+	public void setList(Trip t) {
 		tripList = helper.loadList(t, "pack");
 	}
 
@@ -58,7 +61,7 @@ public class PackingList extends ListActivity implements OnClickListener,
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.packing_list);
-		ListView list = (ListView) findViewById(android.R.id.list);
+		list = (ListView) findViewById(android.R.id.list);
 		list.setLongClickable(true);
 		registerForContextMenu(list);
 		helper = new SQLHelper(this);
@@ -74,7 +77,7 @@ public class PackingList extends ListActivity implements OnClickListener,
 		speaker = new TextToSpeech(this, this);
 
 		// Receives trip id from prior activity and sets it to activeTrip
-		Bundle extras = this.getIntent().getExtras();
+		extras = this.getIntent().getExtras();
 		if (extras != null) {
 			activeTrip = helper.getTripByID(Integer.parseInt(extras
 					.getString("trip_id")));
@@ -83,40 +86,48 @@ public class PackingList extends ListActivity implements OnClickListener,
 
 		// Dummy Code
 		this.refreshList();
-		this.saveList();
 		/****************************************************************/
 	}
 
 	// Refreshes list and notifies adapter
 	public void refreshList() {
 		items.clear();
-
-		for (TripListItem t : tripList) {
-			items.add(t.getText());
+		for (int i = 0; i < tripList.size(); i++) {
+			items.add(tripList.get(i).getText());
+			if (tripList.get(i).isChecked()) {
+				list.setItemChecked(i, true);
+			}
 		}
+
 		adapter.notifyDataSetChanged();
-
-		int i = 0;
-		for (TripListItem t : tripList) {
-			this.getListView().setItemChecked(i, t.isChecked());
-			i++;
-		}
 	}
 
 	// Allows checking and un-checking of items
 	protected void onListItemClick(ListView l, View v, int position, long id) {
+
 		CheckedTextView item = (CheckedTextView) v;
 		if (item.isChecked()) {
 			tripList.get(position).setChecked();
+			this.saveList();
 		} else {
 			tripList.get(position).setUnChecked();
+			this.saveList();
 		}
+
+		this.refreshList();
+
 	}
 
 	// Writes list items to database
 	public void saveList() {
-		helper.saveList(tripList);
-
+		tripList.unCheckAll();
+		SparseBooleanArray checked = list.getCheckedItemPositions();
+		for (int i = 0; i < adapter.getCount(); i++) {
+			if (checked.get(i)) {
+				tripList.get(i).setChecked();
+			}
+			helper.saveList(tripList);
+		}
 	}
 
 	protected void onPause() {
@@ -126,7 +137,13 @@ public class PackingList extends ListActivity implements OnClickListener,
 	}
 
 	protected void onResume() {
-		super.onPause();
+		super.onResume();
+		extras = this.getIntent().getExtras();
+		if (extras != null) {
+			activeTrip = helper.getTripByID(Integer.parseInt(extras
+					.getString("trip_id")));
+			this.setList(activeTrip);
+		}
 		this.refreshList();
 	}
 
@@ -248,5 +265,5 @@ public class PackingList extends ListActivity implements OnClickListener,
 			speak(t);
 		}
 	}
-	
+
 }

@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 public class ToDoListActivity extends PackingList{
 
-	
 	@Override
 	public void setList(Trip t){
 		super.tripList = super.helper.loadList(t, "todo");

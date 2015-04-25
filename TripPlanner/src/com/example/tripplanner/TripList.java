@@ -19,6 +19,12 @@ public abstract class TripList extends ArrayList<TripListItem> {
 		t.setTrip(this.trip);
 		t.setTripList(this);
 	}
+	
+	public void unCheckAll(){
+		for (TripListItem t : this){
+			t.setUnChecked();
+		}
+	}
 
 	public void setTable(String table) {
 		this.table = table;

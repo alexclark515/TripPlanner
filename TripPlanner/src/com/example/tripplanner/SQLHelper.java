@@ -116,6 +116,9 @@ public class SQLHelper extends SQLiteOpenHelper {
 		if (item.isChecked()) {
 			checked = 1;
 		}
+		if (!(item.isChecked())) {
+			checked = 0;
+		}
 
 		values = new ContentValues();
 		values.put(TRIP_ID, item.getTripID());
@@ -160,10 +163,8 @@ public class SQLHelper extends SQLiteOpenHelper {
 	public void saveList(TripList list) {
 
 		this.deleteItems(list);
-
 		for (int i = 0; i < list.size(); i++) {
 			this.addListItem(list.get(i), i + 1);
-
 		}
 
 	}
@@ -288,9 +289,10 @@ public class SQLHelper extends SQLiteOpenHelper {
 		cursor = dbRead.rawQuery(sql, null);
 		cursor.moveToFirst();
 		for (int i = 0; i < cursor.getCount(); i++) {
+			checked = false;
 			text = cursor.getString(2);
 
-			if (cursor.getString(3).equals("1")) {
+			if (Integer.parseInt(cursor.getString(3)) == 1) {
 				checked = true;
 			}
 

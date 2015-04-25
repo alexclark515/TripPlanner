@@ -7,7 +7,6 @@ public class PackList extends TripList {
 	public PackList(Trip trip) {
 		super(trip);
 		super.setTable("pack");;
-		
 	}
 	
 	public PackList(){
