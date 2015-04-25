@@ -128,12 +128,7 @@ public class NewTrip extends Activity implements OnClickListener {
 
 		// If Cancel Button is clicked.
 		case R.id.btnCancelNT:
-			Toast.makeText(this, helper.CREATE_TBL_TODO, Toast.LENGTH_LONG)
-					.show();
-			Toast.makeText(
-					this,
-					"You clicked the " + btnCancel.getText().toString()
-							+ " Button.", Toast.LENGTH_SHORT).show();
+			super.onBackPressed();
 			break;
 
 		// If Save Button is clicked.
@@ -148,10 +143,7 @@ public class NewTrip extends Activity implements OnClickListener {
 
 		// If To Do List Button is clicked.
 		case R.id.btnToDoListNT:
-			Toast.makeText(
-					this,
-					"You clicked the " + btnToDoList.getText().toString()
-							+ " Button.", Toast.LENGTH_SHORT).show();
+			this.goToToDoList();
 			break;
 		}
 
@@ -213,6 +205,19 @@ public class NewTrip extends Activity implements OnClickListener {
 		if (isComplete()) {
 			this.saveTrip(false);
 			Intent intent = new Intent(this, PackingList.class);
+			intent.putExtra("trip_id",
+					Integer.toString(NewTrip.this.activeTrip.getID()));
+			startActivity(intent);
+		} else {
+			Toast.makeText(NewTrip.this, "All Fields Required",
+					Toast.LENGTH_SHORT).show();
+		}
+	}
+	
+	public void goToToDoList() {
+		if (isComplete()) {
+			this.saveTrip(false);
+			Intent intent = new Intent(this, ToDoListActivity.class);
 			intent.putExtra("trip_id",
 					Integer.toString(NewTrip.this.activeTrip.getID()));
 			startActivity(intent);

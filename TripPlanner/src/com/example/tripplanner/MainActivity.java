@@ -62,25 +62,6 @@ public class MainActivity extends ListActivity {
 		} catch (SQLException e) {
 			Log.d("SQLite", "Create database failed");
 		}
-
-		// Dummy Trips - Delete this code when finished
-		helper.deleteAll();
-		Trip trip = new Trip("Peru", "Arequipa", "2015-06-01", "2015-07-01");
-		Trip trip2 = new Trip("Nepal", "Kathmandu", "2016-10-01", "2016-11-01");
-		Trip trip3 = new Trip("Argentina", "Patagonia", "2015-12-01",
-				"2016-01-01");
-		helper.addTrip(trip);
-		helper.addTrip(trip2);
-		helper.addTrip(trip3);
-		this.packList = new PackList(trip);
-
-		packList.addItem(new TripListItem("Shoes"));
-		packList.addItem(new TripListItem("Boots"));
-		packList.addItem(new TripListItem("Rope", true));
-
-		helper.saveList(this.packList);
-		// ******************************************************/
-
 		this.refreshList();
 	}
 

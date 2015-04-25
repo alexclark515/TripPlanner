@@ -36,10 +36,10 @@ import android.app.ListActivity;
 
 public class PackingList extends ListActivity implements OnClickListener,
 		OnInitListener {
-	private SQLHelper helper;
+	protected SQLHelper helper;
 	private SQLiteDatabase db;
 	private static Trip activeTrip;
-	private static PackList packList;
+	protected static TripList tripList;
 	private ArrayList<String> items = new ArrayList<String>();
 	private ArrayAdapter<String> adapter;
 	private EditText input;
@@ -47,7 +47,12 @@ public class PackingList extends ListActivity implements OnClickListener,
 	private Button btnAdd;
 	private AdapterView.AdapterContextMenuInfo acmi;
 	private int selectedPos;
+	protected TextView title;
 	private boolean isNewItem = true;
+	
+	public void setList(Trip t){
+		tripList = helper.loadList(t, "pack");
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +68,7 @@ public class PackingList extends ListActivity implements OnClickListener,
 		input = (EditText) findViewById(R.id.packingListInput);
 		btnAdd = (Button) findViewById(R.id.btnPackAdd);
 		btnAdd.setOnClickListener(this);
+		title = (TextView) findViewById(R.id.packingListViewName);
 
 		// Initialize Speech Engine (context, listener object)
 		speaker = new TextToSpeech(this, this);
@@ -72,7 +78,7 @@ public class PackingList extends ListActivity implements OnClickListener,
 		if (extras != null) {
 			activeTrip = helper.getTripByID(Integer.parseInt(extras
 					.getString("trip_id")));
-			packList = helper.loadPackList(activeTrip);
+			this.setList(activeTrip);
 		}
 
 		// Dummy Code
@@ -85,13 +91,13 @@ public class PackingList extends ListActivity implements OnClickListener,
 	public void refreshList() {
 		items.clear();
 
-		for (TripListItem t : packList) {
+		for (TripListItem t : tripList) {
 			items.add(t.getText());
 		}
 		adapter.notifyDataSetChanged();
 
 		int i = 0;
-		for (TripListItem t : packList) {
+		for (TripListItem t : tripList) {
 			this.getListView().setItemChecked(i, t.isChecked());
 			i++;
 		}
@@ -101,15 +107,15 @@ public class PackingList extends ListActivity implements OnClickListener,
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		CheckedTextView item = (CheckedTextView) v;
 		if (item.isChecked()) {
-			packList.get(position).setChecked();
+			tripList.get(position).setChecked();
 		} else {
-			packList.get(position).setUnChecked();
+			tripList.get(position).setUnChecked();
 		}
 	}
 
 	// Writes list items to database
 	public void saveList() {
-		helper.saveList(packList);
+		helper.saveList(tripList);
 
 	}
 
@@ -197,7 +203,7 @@ public class PackingList extends ListActivity implements OnClickListener,
 			this.deleteItem(acmi.position);
 		}
 		if (item.getTitle().toString().equals("Edit")) {
-			input.setText(packList.get(acmi.position).getText());
+			input.setText(tripList.get(acmi.position).getText());
 			btnAdd.setText("Save");
 			selectedPos = acmi.position;
 			isNewItem = false;
@@ -206,7 +212,7 @@ public class PackingList extends ListActivity implements OnClickListener,
 	}
 
 	public void deleteItem(int i) {
-		packList.remove(i);
+		tripList.remove(i);
 		this.speak("item deleted");
 		this.saveList();
 		this.refreshList();
@@ -216,7 +222,7 @@ public class PackingList extends ListActivity implements OnClickListener,
 		String newItem = input.getText().toString();
 		this.speakText("item updated");
 		input.setText("");
-		packList.get(selectedPos).setText(newItem);
+		tripList.get(selectedPos).setText(newItem);
 		btnAdd.setText("Add");
 		isNewItem = true;
 		this.saveList();
@@ -228,7 +234,7 @@ public class PackingList extends ListActivity implements OnClickListener,
 		if (!(newItem.equals(""))) {
 			this.speak(newItem + " added");
 			input.setText("");
-			packList.addItem(new TripListItem(newItem));
+			tripList.addItem(new TripListItem(newItem));
 			this.saveList();
 			this.refreshList();
 		}
@@ -242,4 +248,5 @@ public class PackingList extends ListActivity implements OnClickListener,
 			speak(t);
 		}
 	}
+	
 }

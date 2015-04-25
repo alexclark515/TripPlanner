@@ -267,44 +267,23 @@ public class SQLHelper extends SQLiteOpenHelper {
 		return trips;
 	}
 
-	public PackList loadPackList(Trip trip) {
+	public TripList loadList(Trip trip, String type) {
 		Cursor cursor;
 		SQLiteDatabase dbRead = this.getReadableDatabase();
 		String sql;
-		PackList list = new PackList();
+		TripList list;
 		String text;
 		boolean checked = false;
-		list.setTrip(trip);
 
-		sql = "select * from " + TBL_PACK + " where " + TRIP_ID + " = "
-				+ trip.getID() + ";";
-		cursor = dbRead.rawQuery(sql, null);
-		cursor.moveToFirst();
-		for (int i = 0; i < cursor.getCount(); i++) {
-			text = cursor.getString(2);
-
-			if (cursor.getString(3).equals("1")) {
-				checked = true;
-			}
-
-			list.addItem(new TripListItem(text, checked));
-			cursor.moveToNext();
+		if (type.equals("pack")) {
+			list = new PackList(trip);
+		} else {
+			list = new ToDoList(trip);
 		}
 
-		return list;
-
-	}
-
-	public ToDoList loadToDoList(Trip trip) {
-		Cursor cursor;
-		SQLiteDatabase dbRead = this.getReadableDatabase();
-		String sql;
-		ToDoList list = new ToDoList();
-		String text;
-		boolean checked = false;
 		list.setTrip(trip);
 
-		sql = "select * from " + TBL_TODO + " where " + TRIP_ID + " = "
+		sql = "select * from " + type + " where " + TRIP_ID + " = "
 				+ trip.getID() + ";";
 		cursor = dbRead.rawQuery(sql, null);
 		cursor.moveToFirst();
