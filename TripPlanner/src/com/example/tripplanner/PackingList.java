@@ -13,13 +13,18 @@ import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
 import android.text.InputType;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckedTextView;
@@ -40,11 +45,17 @@ public class PackingList extends ListActivity implements OnClickListener,
 	private EditText input;
 	private TextToSpeech speaker;
 	private Button btnAdd;
+	private AdapterView.AdapterContextMenuInfo acmi;
+	private int selectedPos;
+	private boolean isNewItem = true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.packing_list);
+		ListView list = (ListView) findViewById(android.R.id.list);
+		list.setLongClickable(true);
+		registerForContextMenu(list);
 		helper = new SQLHelper(this);
 		adapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_list_item_checked, items);
@@ -105,74 +116,130 @@ public class PackingList extends ListActivity implements OnClickListener,
 	protected void onPause() {
 		this.saveList();
 		super.onPause();
-		
+
 	}
-	
-	protected void onResume(){
+
+	protected void onResume() {
 		super.onPause();
 		this.refreshList();
 	}
-	
-	protected void onStop(){
+
+	protected void onStop() {
 		this.saveList();
 		super.onStop();
 	}
-	
+
 	@Override
 	public void onInit(int status) {
 		// status can be either TextToSpeech.SUCCESS or TextToSpeech.ERROR.
-        if (status == TextToSpeech.SUCCESS) {
-            // Set preferred language to US english.
-            // If a language is not be available, the result will indicate it.
-            int result = speaker.setLanguage(Locale.UK);
-           
-           //  int result = speaker.setLanguage(Locale.FRANCE);
-            if (result == TextToSpeech.LANG_MISSING_DATA ||
-                result == TextToSpeech.LANG_NOT_SUPPORTED) {
-               // Language data is missing or the language is not supported.
-                Log.e("error", "Language is not available.");
-            } else {
-                  // The TTS engine has been successfully initialized            	
-            	Log.i("error", "TTS Initialization successful.");
-            }
-        } else {
-            // Initialization failed.
-            Log.e("error", "Could not initialize TextToSpeech.");
-        }
-		
+		if (status == TextToSpeech.SUCCESS) {
+			// Set preferred language to US english.
+			// If a language is not be available, the result will indicate it.
+			int result = speaker.setLanguage(Locale.UK);
+
+			// int result = speaker.setLanguage(Locale.FRANCE);
+			if (result == TextToSpeech.LANG_MISSING_DATA
+					|| result == TextToSpeech.LANG_NOT_SUPPORTED) {
+				// Language data is missing or the language is not supported.
+				Log.e("error", "Language is not available.");
+			} else {
+				// The TTS engine has been successfully initialized
+				Log.i("error", "TTS Initialization successful.");
+			}
+		} else {
+			// Initialization failed.
+			Log.e("error", "Could not initialize TextToSpeech.");
+		}
+
 	}
+
 	// On destroy
-	public void onDestroy(){
-		    
-	// Shut down TTS engine
-		if(speaker != null){
-		   speaker.stop();
-		   speaker.shutdown();
-	    }
-	   	super.onDestroy();
-	}	
-		
+	public void onDestroy() {
+
+		// Shut down TTS engine
+		if (speaker != null) {
+			speaker.stop();
+			speaker.shutdown();
+		}
+		super.onDestroy();
+	}
+
 	// Speaks the contents of output
 	@SuppressWarnings("deprecation")
-	public void speak(String output){
+	public void speak(String output) {
 		speaker.speak(output, TextToSpeech.QUEUE_FLUSH, null);
 	}
-	
+
 	@Override
-	public void onClick(View v){
-		String newItem = input.getText().toString();
-		
-		if(speaker.isSpeaking()){
-			speaker.stop();
-			speak(newItem + "added");
+	public void onClick(View v) {
+		if (isNewItem) {
+			this.addNewItem();
+		} else {
+			this.changeItem();
 		}
-		else{
-			speak(newItem + "added");
+	}
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		if (v.getId() == android.R.id.list) {
+			acmi = (AdapterContextMenuInfo) menuInfo;
+			menu.add("Delete");
+			menu.add("Edit");
+
 		}
-		input.setText("");
-		packList.addItem(new TripListItem(newItem));
+	}
+
+	public boolean onContextItemSelected(MenuItem item) {
+		super.onContextItemSelected(item);
+
+		if (item.getTitle().toString().equals("Delete")) {
+			this.deleteItem(acmi.position);
+		}
+		if (item.getTitle().toString().equals("Edit")) {
+			input.setText(packList.get(acmi.position).getText());
+			btnAdd.setText("Save");
+			selectedPos = acmi.position;
+			isNewItem = false;
+		}
+		return false;
+	}
+
+	public void deleteItem(int i) {
+		packList.remove(i);
+		this.speak("item deleted");
 		this.saveList();
 		this.refreshList();
 	}
 
+	public void changeItem() {
+		String newItem = input.getText().toString();
+		this.speakText("item updated");
+		input.setText("");
+		packList.get(selectedPos).setText(newItem);
+		btnAdd.setText("Add");
+		isNewItem = true;
+		this.saveList();
+		this.refreshList();
+	}
+
+	public void addNewItem() {
+		String newItem = input.getText().toString();
+		if (!(newItem.equals(""))) {
+			this.speak(newItem + " added");
+			input.setText("");
+			packList.addItem(new TripListItem(newItem));
+			this.saveList();
+			this.refreshList();
+		}
+	}
+
+	public void speakText(String t) {
+		if (speaker.isSpeaking()) {
+			speaker.stop();
+			speak(t);
+		} else {
+			speak(t);
+		}
+	}
 }

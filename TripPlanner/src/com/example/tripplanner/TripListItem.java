@@ -36,6 +36,10 @@ public class TripListItem {
 	public void setIndex(int index){
 		this.Index = index;
 	}
+	
+	public void setText(String s){
+		this.text = s;
+	}
 
 	public void setTable(String table) {
 		this.table = table;
