@@ -35,6 +35,7 @@
         </activity>
         <activity android:name=".PackingList" >
         </activity>
+        <activity android:name=".Alerts"></activity>
         <activity
             android:name=".GoogleMaps"
             android:label="@string/title_activity_google_maps" >
