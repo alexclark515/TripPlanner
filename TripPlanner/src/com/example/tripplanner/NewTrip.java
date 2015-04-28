@@ -6,10 +6,14 @@ import java.util.GregorianCalendar;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -37,6 +41,8 @@ public class NewTrip extends Activity implements OnClickListener {
 	protected String sqlStartDate;
 	protected String sqlEndDate;
 	private Intent packList;
+	private PendingIntent pendingIntent;
+	public static final int NOTIFICATION_ID = 1;
 
 	// This format should be used for showing in the edit text
 	protected SimpleDateFormat date_fmt = new SimpleDateFormat(
@@ -150,7 +156,7 @@ public class NewTrip extends Activity implements OnClickListener {
 	}
 
 	// Method to save data to SQLite database
-	public void saveTrip(boolean toast) {
+	public void saveTrip(boolean isNew) {
 		String msg = "All Fields Required";
 		String msg2 = "Please choose a unique trip name";
 		String name = tripName.getText().toString();
@@ -162,8 +168,8 @@ public class NewTrip extends Activity implements OnClickListener {
 
 			if (helper.isUnique(activeTrip)) {
 				helper.addTrip(activeTrip);
-				if (toast) {
-					Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+				if (isNew) {
+					this.sendNotification(dest);
 				}
 				Intent intent = new Intent(this, ViewTrip.class);
 				intent.putExtra("trip_name", activeTrip.getName());
@@ -225,6 +231,21 @@ public class NewTrip extends Activity implements OnClickListener {
 			Toast.makeText(NewTrip.this, "All Fields Required",
 					Toast.LENGTH_SHORT).show();
 		}
+	}
+	
+	public void sendNotification(String dest) {
+
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(
+				this);
+
+		builder.setSmallIcon(R.drawable.ic_launcher);
+		builder.setLargeIcon(BitmapFactory.decodeResource(getResources(),
+				R.drawable.ic_launcher));
+		builder.setContentTitle("New Trip Added");
+		builder.setContentText("You're going to " + dest + "!");
+		NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		notificationManager.notify(NOTIFICATION_ID, builder.build());
+
 	}
 
 }

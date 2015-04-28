@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#CEECF5"
     android:orientation="vertical" >
 
     <TextView
@@ -24,9 +25,11 @@
         <EditText
             android:id="@+id/packingListInput"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#FFFF00" 
-            android:layout_weight="1">
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#FFFFFF"
+            android:textSize="18dp" >
+
         </EditText>
         
         <Button

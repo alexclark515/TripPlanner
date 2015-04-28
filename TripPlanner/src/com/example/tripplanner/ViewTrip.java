@@ -9,6 +9,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -129,6 +130,16 @@ public class ViewTrip extends NewTrip {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		Intent i = new Intent(this, MainActivity.class);
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			startActivity(i);
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 }

@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" 
-    android:background="#0066FF">
+    android:background="#CEECF5">
     
     <!-- Linear Layout for the input fields -->
 
@@ -16,51 +16,63 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/new_trip_name" />
+            android:text="@string/new_trip_name"
+            android:textSize="18dp" />
 
         <EditText
             android:id="@+id/inputName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#FFFFFF" >
+            android:background="#FFFFFF"
+            android:textSize="18dp" >
+
         </EditText>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/destination" />
+            android:text="@string/destination"
+            android:textSize="18dp" />
+
         <EditText
             android:id="@+id/inputDestination"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#FFFFFF" />
-
+            android:background="#FFFFFF"
+            android:textSize="18dp" />
         
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/start_date" />
+            android:text="@string/start_date"
+            android:textSize="18dp" />
+
         <EditText
             android:id="@+id/startDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#FFFFFF"
             android:focusable="false"
-            >
+            android:textSize="18dp" >
+
        </EditText>
        
-        <TextView 
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/end_date">            
+            android:text="@string/end_date"
+            android:textSize="18dp" >
+            
         </TextView>
+
         <EditText
             android:id="@+id/endDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#FFFFFF" 
+            android:background="#FFFFFF"
             android:focusable="false"
-         >
+            android:textSize="18dp" >
+
         </EditText>
 
         "

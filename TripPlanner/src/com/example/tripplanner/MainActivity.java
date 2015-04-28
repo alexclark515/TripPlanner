@@ -14,8 +14,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.AlphaAnimation;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,25 +25,22 @@ import android.widget.Toast;
 public class MainActivity extends ListActivity {
 
 	// Declare variables for widgets
-	private TextView viewNextTrip;
-	private Button planATrip;
-	private Button tripHistory;
-	private Button viewMap;
-	private Button viewAlerts;
-	private Button googleSearch;
-	private Button saveLocation;
+	/*
+	 * private TextView viewNextTrip; private Button planATrip; private Button
+	 * tripHistory; private Button viewMap; private Button viewAlerts; private
+	 * Button googleSearch; private Button saveLocation;
+	 */
 	private SQLHelper helper;
-	private PackList packList;
+	// private PackList packList;
 	private SQLiteDatabase db;
 	private static String selectedTripName = "";
-	private Calendar cal = Calendar.getInstance();
+	// private Calendar cal = Calendar.getInstance();
 
 	final int PICK1 = Menu.FIRST + 1;
 	final int PICK2 = Menu.FIRST + 2;
 	final int PICK3 = Menu.FIRST + 3;
 	final int PICK4 = Menu.FIRST + 4;
 	final int PICK5 = Menu.FIRST + 5;
-	final int PICK6 = Menu.FIRST + 6;
 
 	ArrayList<String> trips = new ArrayList<String>();
 	ArrayAdapter<String> aa;
@@ -52,6 +51,15 @@ public class MainActivity extends ListActivity {
 
 		helper = new SQLHelper(this);
 		setContentView(R.layout.activity_main);
+
+		// Play a fade in animation of the MainActivity Layout.
+		LinearLayout layout = (LinearLayout) findViewById(R.id.linearId);
+		AlphaAnimation animation = new AlphaAnimation(0.0f, 1.0f);
+		animation.setFillAfter(true);
+		animation.setDuration(2500);
+
+		layout.startAnimation(animation);
+
 		aa = new ArrayAdapter<String>(this,
 				android.R.layout.simple_list_item_single_choice, trips);
 		setListAdapter(aa);
@@ -72,52 +80,58 @@ public class MainActivity extends ListActivity {
 		MenuItem item2 = menu.add(0, PICK2, Menu.NONE, "View Trip");
 		MenuItem item3 = menu.add(0, PICK3, Menu.NONE, "View Map");
 		MenuItem item4 = menu.add(0, PICK4, Menu.NONE, "Search Google");
-		MenuItem item5 = menu.add(0, PICK5, Menu.NONE, "View Alerts");
-		MenuItem item6 = menu.add(0, PICK6, Menu.NONE, "Delete Trip");
+		MenuItem item5 = menu.add(0, PICK5, Menu.NONE, "Delete Trip");
 
 		return true;
 	}
 
+	// Handles menu item selection
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int itemId = item.getItemId();
 
 		switch (itemId) {
 
-		// New Trip
+		// Starts NewTrip activity
 		case PICK1:
 			startActivity(new Intent(this, NewTrip.class));
 			return true;
-			// View Trip
+
+			// Starts ViewTripActivity
 		case PICK2:
 			if (!(MainActivity.selectedTripName.equals(""))) {
 				Intent intent = new Intent(this, ViewTrip.class);
 				intent.putExtra("trip_name", selectedTripName);
 				startActivity(intent);
+			} else {
+				Toast.makeText(this, "Select a trip", Toast.LENGTH_SHORT)
+						.show();
 			}
 			return true;
-			// View Map
+
+			// Starts Google Maps Activity
 		case PICK3:
 			startActivity(new Intent(this, GoogleMaps.class));
-			//Toast.makeText(this, "Long tap to add marker", Toast.LENGTH_LONG).show();
 			return true;
-			// Search Google
+
+			// Starts Google Search Activity
 		case PICK4:
 			startActivity(new Intent(this, GoogleSearch.class));
 			return true;
-			// View Alerts [CURRENTLY JUST ADDING TRIPS]
+
+			// Deletes trip from database and list
 		case PICK5:
-			startActivity(new Intent(this, Alerts.class));
-			return true;
-		
-		case PICK6:
 			if (!(MainActivity.selectedTripName.equals(""))) {
 				Trip t = helper.getTripByName(selectedTripName);
 				helper.deleteTrip(t.getID());
 				this.refreshList();
 				selectedTripName = "";
+				this.getListView().clearChoices();
+			} else {
+				Toast.makeText(this, "Select a trip to delete",
+						Toast.LENGTH_SHORT).show();
 			}
-			return true;	
+			return true;
 		}
 		return false;
 	}
@@ -129,6 +143,7 @@ public class MainActivity extends ListActivity {
 		selectedTripName = (String) object;
 	}
 
+	// Refreshes list on resume
 	protected void onResume() {
 		super.onResume();
 		this.refreshList();
