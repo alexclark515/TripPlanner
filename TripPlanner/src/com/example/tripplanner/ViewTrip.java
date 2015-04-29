@@ -40,6 +40,8 @@ public class ViewTrip extends NewTrip {
 
 	}
 
+	// This method overrides the NewTrip saveTrip method. It creates updates the
+	// current trip instead of creating a new one
 	@Override
 	public void saveTrip(boolean toast) {
 		String name = tripName.getText().toString();
@@ -56,6 +58,7 @@ public class ViewTrip extends NewTrip {
 
 	}
 
+	// Sends user to pack list
 	@Override
 	public void goToPackList() {
 		if (isComplete()) {
@@ -83,10 +86,8 @@ public class ViewTrip extends NewTrip {
 	// Creates the Options Menu
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		MenuItem item1 = menu.add(0, PICK1, Menu.NONE,
-				"Send Trip Details via Email");
-		MenuItem item2 = menu.add(0, PICK2, Menu.NONE,
-				"Send Trip Details via SMS");
+		menu.add(0, PICK1, Menu.NONE, "Send Trip Details via Email");
+		menu.add(0, PICK2, Menu.NONE, "Send Trip Details via SMS");
 
 		return true;
 	}
@@ -107,7 +108,6 @@ public class ViewTrip extends NewTrip {
 
 		// Send Trip via Email
 		case PICK1:
-
 			Intent email = new Intent(Intent.ACTION_SEND);
 			email.setType("message/rfc822");
 
@@ -118,9 +118,9 @@ public class ViewTrip extends NewTrip {
 					.createChooser(email, "Choose an Email Client:"));
 
 			return true;
+
 			// Send Trip via SMS
 		case PICK2:
-
 			Intent sms = new Intent(Intent.ACTION_VIEW);
 			sms.setType("vnd.android-dir/mms-sms");
 			sms.putExtra("sms_body", content);
@@ -132,6 +132,7 @@ public class ViewTrip extends NewTrip {
 		return false;
 	}
 
+	// When you go back, you return to main screen
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		Intent i = new Intent(this, MainActivity.class);
@@ -140,6 +141,13 @@ public class ViewTrip extends NewTrip {
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
+	}
+
+	// Handles going back
+	@Override
+	public void goBack() {
+		Intent i = new Intent(this, MainActivity.class);
+		startActivity(i);
 	}
 
 }

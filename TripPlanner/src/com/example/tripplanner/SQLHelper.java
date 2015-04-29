@@ -251,6 +251,7 @@ public class SQLHelper extends SQLiteOpenHelper {
 		return trip;
 	}
 
+	//Returns an array list of all the trips in the database
 	public ArrayList<Trip> getTrips() {
 		ArrayList<Trip> trips = new ArrayList<Trip>();
 		Cursor cursor;
@@ -268,6 +269,7 @@ public class SQLHelper extends SQLiteOpenHelper {
 		return trips;
 	}
 
+	//Is called to load a list (pack or todo) from the database 
 	public TripList loadList(Trip trip, String type) {
 		Cursor cursor;
 		SQLiteDatabase dbRead = this.getReadableDatabase();

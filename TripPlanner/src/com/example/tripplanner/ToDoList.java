@@ -1,4 +1,4 @@
-//This is the to do list class a separate .java will need to be created for the to do list activity
+//To do list extends trip list, 
 
 package com.example.tripplanner;
 

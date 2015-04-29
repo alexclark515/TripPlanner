@@ -81,8 +81,7 @@ public class NewTrip extends Activity implements OnClickListener {
 					public void onDateSet(DatePicker view, int year,
 							int monthOfYear, int dayOfMonth) {
 
-						// The Gregorian calendar is a good way to store dates
-						// in Java
+						// The Gregorian calendar for storing dates
 						Calendar cal = new GregorianCalendar(year, monthOfYear,
 								dayOfMonth, 0, 0, 0);
 
@@ -108,7 +107,7 @@ public class NewTrip extends Activity implements OnClickListener {
 		// On click listener for the edit text
 		startDate.setOnClickListener(new OnClickListener() {
 
-			// This method is called when the edit text is clicked
+			// This method is called when the start date is clicked
 			@Override
 			public void onClick(View v) {
 				dateType = 0;
@@ -118,7 +117,7 @@ public class NewTrip extends Activity implements OnClickListener {
 
 		endDate.setOnClickListener(new OnClickListener() {
 
-			// This method is called when the edit text is clicked
+			// This method is called when the end date is clicked
 			@Override
 			public void onClick(View v) {
 				dateType = 1;
@@ -129,25 +128,24 @@ public class NewTrip extends Activity implements OnClickListener {
 	}
 
 	public void onClick(View v) {
-		// Currently test code to make sure buttons are working.
 		switch (v.getId()) {
 
-		// If Cancel Button is clicked.
+		// If Cancel Button is clicked go back.
 		case R.id.btnCancelNT:
-			super.onBackPressed();
+			this.goBack();
 			break;
 
-		// If Save Button is clicked.
+		// If Save Button is clicked call saveTrip method
 		case R.id.btnSaveNT:
 			this.saveTrip(true);
 			break;
 
-		// If Packing List Button is clicked.
+		// If Packing List Button is clicked go to the pack list
 		case R.id.btnPackingListNT:
 			this.goToPackList();
 			break;
 
-		// If To Do List Button is clicked.
+		// If To Do List Button is clicked go to to do list
 		case R.id.btnToDoListNT:
 			this.goToToDoList();
 			break;
@@ -161,16 +159,19 @@ public class NewTrip extends Activity implements OnClickListener {
 		String msg2 = "Please choose a unique trip name";
 		String name = tripName.getText().toString();
 		String dest = destination.getText().toString();
-
+		
+		//Verifies that form is complete
 		if (isComplete()) {
 			NewTrip.this.activeTrip = new Trip(name, dest, sqlStartDate,
 					sqlEndDate);
 
+			//Verifies that this is a unique name
 			if (helper.isUnique(activeTrip)) {
 				helper.addTrip(activeTrip);
 				if (isNew) {
 					this.sendNotification(dest);
 				}
+				//When this is saved, the user is sent to the ViewTrip activity
 				Intent intent = new Intent(this, ViewTrip.class);
 				intent.putExtra("trip_name", activeTrip.getName());
 				intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -184,6 +185,7 @@ public class NewTrip extends Activity implements OnClickListener {
 		}
 	}
 
+	//checks to make sure that the form is complete
 	public boolean isComplete() {
 		boolean complete = false;
 		String name = tripName.getText().toString();
@@ -199,14 +201,17 @@ public class NewTrip extends Activity implements OnClickListener {
 
 	}
 
+	//Returns the value of the start date formatted for sql
 	public String getSQLStartDate() {
 		return this.sqlStartDate;
 	}
 
+	//Returns the value of the end date formatted for sql
 	public String getSQLEndDate() {
 		return this.sqlEndDate;
 	}
 
+	//Before going to pack list, the trip is saved.
 	public void goToPackList() {
 		if (isComplete()) {
 			this.saveTrip(false);
@@ -220,6 +225,7 @@ public class NewTrip extends Activity implements OnClickListener {
 		}
 	}
 	
+	//Opens the to do list activity and pass the trip id with it
 	public void goToToDoList() {
 		if (isComplete()) {
 			this.saveTrip(false);
@@ -233,6 +239,7 @@ public class NewTrip extends Activity implements OnClickListener {
 		}
 	}
 	
+	//Builds a notification
 	public void sendNotification(String dest) {
 
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(
@@ -246,6 +253,11 @@ public class NewTrip extends Activity implements OnClickListener {
 		NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		notificationManager.notify(NOTIFICATION_ID, builder.build());
 
+	}
+	
+	//Handles going back
+	public void goBack(){
+		super.onBackPressed();
 	}
 
 }

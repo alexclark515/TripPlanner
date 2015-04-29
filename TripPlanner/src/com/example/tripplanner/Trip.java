@@ -1,7 +1,5 @@
 package com.example.tripplanner;
 
-import java.sql.Date;
-import java.util.ArrayList;
 
 public class Trip {
 	private int tripID;

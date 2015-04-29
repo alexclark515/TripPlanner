@@ -3,6 +3,8 @@ package com.example.tripplanner;
 import java.util.ArrayList;
 
 public abstract class TripList extends ArrayList<TripListItem> {
+
+	private static final long serialVersionUID = 1L;
 	private Trip trip;
 	private String table;
 

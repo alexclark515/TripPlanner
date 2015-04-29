@@ -24,17 +24,9 @@ import android.widget.Toast;
 
 public class MainActivity extends ListActivity {
 
-	// Declare variables for widgets
-	/*
-	 * private TextView viewNextTrip; private Button planATrip; private Button
-	 * tripHistory; private Button viewMap; private Button viewAlerts; private
-	 * Button googleSearch; private Button saveLocation;
-	 */
 	private SQLHelper helper;
-	// private PackList packList;
 	private SQLiteDatabase db;
 	private static String selectedTripName = "";
-	// private Calendar cal = Calendar.getInstance();
 
 	final int PICK1 = Menu.FIRST + 1;
 	final int PICK2 = Menu.FIRST + 2;
@@ -76,12 +68,11 @@ public class MainActivity extends ListActivity {
 	// Creates the Options Menu
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		MenuItem item1 = menu.add(0, PICK1, Menu.NONE, "New Trip");
-		MenuItem item2 = menu.add(0, PICK2, Menu.NONE, "View Trip");
-		MenuItem item3 = menu.add(0, PICK3, Menu.NONE, "View Map");
-		MenuItem item4 = menu.add(0, PICK4, Menu.NONE, "Search Google");
-		MenuItem item5 = menu.add(0, PICK5, Menu.NONE, "Delete Trip");
-
+		menu.add(0, PICK1, Menu.NONE, "New Trip");
+		menu.add(0, PICK2, Menu.NONE, "View Trip");
+		menu.add(0, PICK3, Menu.NONE, "View Map");
+		menu.add(0, PICK4, Menu.NONE, "Search Google");
+		menu.add(0, PICK5, Menu.NONE, "Delete Trip");
 		return true;
 	}
 

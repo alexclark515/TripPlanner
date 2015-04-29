@@ -1,3 +1,7 @@
+//A trip list item is an item on a to do list or a packing list
+//There is always a trip associated with a trip to make sure the
+//trip id is written to the database
+
 package com.example.tripplanner;
 
 public class TripListItem {

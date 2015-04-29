@@ -110,7 +110,7 @@ public class GoogleMaps extends Activity {
 			String adr = "\n" + a.getAddressLine(0) 
 			           + "\n" + a.getAddressLine(1);
 			msg += lat + " " + lng + adr;	
-			Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();		
+			//Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();		
 		}
 	}// showListOfFoundAddresses
 	
