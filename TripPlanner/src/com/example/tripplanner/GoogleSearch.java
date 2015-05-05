@@ -1,3 +1,5 @@
+/**This class handles the Google Search activity*/
+
 package com.example.tripplanner;
 
 import android.app.Activity;

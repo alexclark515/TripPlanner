@@ -1,3 +1,9 @@
+/**The main activity shows the home screen of the app which contains a list of all the trips that the user has created
+ * Authors:
+ * Alex Clark
+ * Xianming Zong
+ * Patrick Leger
+ * Dong Wang*/
 package com.example.tripplanner;
 
 import java.util.ArrayList;
@@ -41,6 +47,7 @@ public class MainActivity extends ListActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		//SQL Helper to read and write to db
 		helper = new SQLHelper(this);
 		setContentView(R.layout.activity_main);
 
@@ -49,9 +56,9 @@ public class MainActivity extends ListActivity {
 		AlphaAnimation animation = new AlphaAnimation(0.0f, 1.0f);
 		animation.setFillAfter(true);
 		animation.setDuration(2500);
-
 		layout.startAnimation(animation);
 
+		//Sets up an array adapter for the trip list
 		aa = new ArrayAdapter<String>(this,
 				android.R.layout.simple_list_item_single_choice, trips);
 		setListAdapter(aa);
@@ -62,6 +69,7 @@ public class MainActivity extends ListActivity {
 		} catch (SQLException e) {
 			Log.d("SQLite", "Create database failed");
 		}
+		//Calls the method to refresh the list of trips
 		this.refreshList();
 	}
 
@@ -92,9 +100,11 @@ public class MainActivity extends ListActivity {
 		case PICK2:
 			if (!(MainActivity.selectedTripName.equals(""))) {
 				Intent intent = new Intent(this, ViewTrip.class);
+				//Passes the trip name to the view trip activity
 				intent.putExtra("trip_name", selectedTripName);
 				startActivity(intent);
 			} else {
+				//IF a trip isn't selected a toast tells the user to selected a trip
 				Toast.makeText(this, "Select a trip", Toast.LENGTH_SHORT)
 						.show();
 			}
@@ -127,7 +137,7 @@ public class MainActivity extends ListActivity {
 		return false;
 	}
 
-	/* @Override This method returns the name of the item selected */
+	/* @Override This method returns the name of the trip selected */
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
 		Object object = this.getListAdapter().getItem(position);
@@ -140,7 +150,7 @@ public class MainActivity extends ListActivity {
 		this.refreshList();
 	}
 
-	// Store all trips in db to array list, get names and adapt to list view
+	// Store all trips in db to array list, get names and adapts to list view
 	// widget
 	public void refreshList() {
 		trips.clear();
@@ -150,6 +160,7 @@ public class MainActivity extends ListActivity {
 			this.trips.add(t.getName());
 		}
 
+		//Notifies adapter of changes
 		aa.notifyDataSetChanged();
 	}
 }

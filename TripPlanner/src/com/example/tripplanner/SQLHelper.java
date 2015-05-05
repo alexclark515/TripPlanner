@@ -1,3 +1,4 @@
+/**The SQL Helper class handles all of the database reading and writing methods*/
 package com.example.tripplanner;
 
 import java.util.ArrayList;
@@ -30,14 +31,17 @@ public class SQLHelper extends SQLiteOpenHelper {
 
 	public static final String KEY_ID = "id integer primary key autoincrement";
 
+	// String used to create trip table
 	public static final String CREATE_TBL_TRIP = "CREATE TABLE " + TBL_TRIP
 			+ "(" + KEY_ID + "," + KEY_NAME + " text UNIQUE, " + DEST
 			+ " text, " + START_DT + " date, " + END_DT + " date);";
 
+	// String used to create to do list table
 	public static final String CREATE_TBL_TODO = "CREATE TABLE " + TBL_TODO
 			+ "(" + TRIP_ID + " integer, " + KEY_NUM + " integer, " + KEY_NAME
 			+ " text, " + CHECK + " text);";
 
+	// String used to create pack list table
 	public static final String CREATE_TBL_PACK = "CREATE TABLE " + TBL_PACK
 			+ "(" + TRIP_ID + " integer, " + KEY_NUM + " integer, " + KEY_NAME
 			+ " text, " + CHECK + " text);";
@@ -113,13 +117,16 @@ public class SQLHelper extends SQLiteOpenHelper {
 		item.setIndex(index);
 		int checked = 0;
 
+		// Stores the value one in the checked column, if the item is checked
 		if (item.isChecked()) {
 			checked = 1;
 		}
+		// Stores 0 if the item isn't checked
 		if (!(item.isChecked())) {
 			checked = 0;
 		}
 
+		// Writes to database
 		values = new ContentValues();
 		values.put(TRIP_ID, item.getTripID());
 		values.put(KEY_NUM, index);
@@ -147,6 +154,7 @@ public class SQLHelper extends SQLiteOpenHelper {
 		dbWrite.delete(table, whereClause, whereArgs);
 	}
 
+	// Method called to delete a trip completely from the database in all tables
 	public void deleteTrip(int id) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		String sql1 = "delete from trip where id = " + id + ";";
@@ -159,7 +167,7 @@ public class SQLHelper extends SQLiteOpenHelper {
 	}
 
 	// Method used to save a trip list. This method first deletes all objects
-	// for the TripList passed, then writes all items in the list
+	// for the TripList passed, then writes all items in the database
 	public void saveList(TripList list) {
 
 		this.deleteItems(list);
@@ -174,7 +182,7 @@ public class SQLHelper extends SQLiteOpenHelper {
 	/***************************** Database Read Methods ********************************/
 
 	// The trip database has an auto-incrementing id, this retrieves the id of
-	// the trip passed in the argument
+	// the trip (name) passed in the argument
 	public int getTripID(Trip trip) {
 		String sql;
 		int id;
@@ -251,7 +259,7 @@ public class SQLHelper extends SQLiteOpenHelper {
 		return trip;
 	}
 
-	//Returns an array list of all the trips in the database
+	// Returns an array list of all the trips in the database
 	public ArrayList<Trip> getTrips() {
 		ArrayList<Trip> trips = new ArrayList<Trip>();
 		Cursor cursor;
@@ -269,7 +277,7 @@ public class SQLHelper extends SQLiteOpenHelper {
 		return trips;
 	}
 
-	//Is called to load a list (pack or todo) from the database 
+	// Is called to load a list (pack or to do) from the database
 	public TripList loadList(Trip trip, String type) {
 		Cursor cursor;
 		SQLiteDatabase dbRead = this.getReadableDatabase();
@@ -290,6 +298,8 @@ public class SQLHelper extends SQLiteOpenHelper {
 				+ trip.getID() + ";";
 		cursor = dbRead.rawQuery(sql, null);
 		cursor.moveToFirst();
+		
+		// Loops through the items in the database and adds them to the list
 		for (int i = 0; i < cursor.getCount(); i++) {
 			checked = false;
 			text = cursor.getString(2);

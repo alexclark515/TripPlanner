@@ -1,3 +1,4 @@
+/**The new trip class (activity) is called to create a new trip*/
 package com.example.tripplanner;
 
 import java.text.SimpleDateFormat;
@@ -41,7 +42,6 @@ public class NewTrip extends Activity implements OnClickListener {
 	protected String sqlStartDate;
 	protected String sqlEndDate;
 	private Intent packList;
-	private PendingIntent pendingIntent;
 	public static final int NOTIFICATION_ID = 1;
 
 	// This format should be used for showing in the edit text
@@ -159,19 +159,24 @@ public class NewTrip extends Activity implements OnClickListener {
 		String msg2 = "Please choose a unique trip name";
 		String name = tripName.getText().toString();
 		String dest = destination.getText().toString();
-		
-		//Verifies that form is complete
+
+		// Verifies that form is complete and instantiates a trip object with
+		// the filled in fields
 		if (isComplete()) {
 			NewTrip.this.activeTrip = new Trip(name, dest, sqlStartDate,
 					sqlEndDate);
 
-			//Verifies that this is a unique name
+			// Verifies that this is a unique name
 			if (helper.isUnique(activeTrip)) {
 				helper.addTrip(activeTrip);
+
+				// If this is a new trip (instead of existing trip), a
+				// notification is sent with the destination name
 				if (isNew) {
 					this.sendNotification(dest);
 				}
-				//When this is saved, the user is sent to the ViewTrip activity
+				// When this is saved, the ViewTrip activity is started and
+				// passed the trip name
 				Intent intent = new Intent(this, ViewTrip.class);
 				intent.putExtra("trip_name", activeTrip.getName());
 				intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -185,7 +190,7 @@ public class NewTrip extends Activity implements OnClickListener {
 		}
 	}
 
-	//checks to make sure that the form is complete
+	// Method used to make sure that the form is complete
 	public boolean isComplete() {
 		boolean complete = false;
 		String name = tripName.getText().toString();
@@ -201,17 +206,17 @@ public class NewTrip extends Activity implements OnClickListener {
 
 	}
 
-	//Returns the value of the start date formatted for sql
+	// Returns the value of the start date formatted for sql
 	public String getSQLStartDate() {
 		return this.sqlStartDate;
 	}
 
-	//Returns the value of the end date formatted for sql
+	// Returns the value of the end date formatted for sql
 	public String getSQLEndDate() {
 		return this.sqlEndDate;
 	}
 
-	//Before going to pack list, the trip is saved.
+	// Before going to pack list, the trip is saved.
 	public void goToPackList() {
 		if (isComplete()) {
 			this.saveTrip(false);
@@ -224,8 +229,8 @@ public class NewTrip extends Activity implements OnClickListener {
 					Toast.LENGTH_SHORT).show();
 		}
 	}
-	
-	//Opens the to do list activity and pass the trip id with it
+
+	// Opens the to do list activity and pass the trip id with it
 	public void goToToDoList() {
 		if (isComplete()) {
 			this.saveTrip(false);
@@ -238,8 +243,8 @@ public class NewTrip extends Activity implements OnClickListener {
 					Toast.LENGTH_SHORT).show();
 		}
 	}
-	
-	//Builds a notification
+
+	// Builds a notification
 	public void sendNotification(String dest) {
 
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(
@@ -254,9 +259,9 @@ public class NewTrip extends Activity implements OnClickListener {
 		notificationManager.notify(NOTIFICATION_ID, builder.build());
 
 	}
-	
-	//Handles going back
-	public void goBack(){
+
+	// Handles going back
+	public void goBack() {
 		super.onBackPressed();
 	}
 

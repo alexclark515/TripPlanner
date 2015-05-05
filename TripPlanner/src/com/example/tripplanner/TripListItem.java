@@ -1,6 +1,6 @@
-//A trip list item is an item on a to do list or a packing list
+/**A trip list item is an item on a to do list or a packing list
 //There is always a trip associated with a trip to make sure the
-//trip id is written to the database
+trip id is written to the database*/
 
 package com.example.tripplanner;
 
@@ -12,69 +12,86 @@ public class TripListItem {
 	private String table;
 	private int Index;
 
+	// One argument constructor is just the text of the item
 	public TripListItem(String text) {
 		this.text = text;
 	}
-	
-	public TripListItem(String text, boolean checked){
+
+	// Two argument constructor is the text and the checked value (true or
+	// false)
+	public TripListItem(String text, boolean checked) {
 		this(text);
 		this.checked = checked;
 	}
 
+	// Checks this item
 	public void setChecked() {
 		this.checked = true;
 	}
-	
-	public void setTripList(TripList t){
+
+	// Sets the trip list of this item
+	public void setTripList(TripList t) {
 		this.list = t;
 	}
-	
-	public void setUnChecked(){
+
+	// Un-checks this item
+	public void setUnChecked() {
 		this.checked = false;
 	}
 
+	// Returns the trip list of this item
 	public TripList getTripList() {
 		return this.list;
 	}
-	
-	public void setIndex(int index){
+
+	// Sets the index of this item
+	public void setIndex(int index) {
 		this.Index = index;
 	}
-	
-	public void setText(String s){
+
+	// Sets the text
+	public void setText(String s) {
 		this.text = s;
 	}
 
+	// Sets the table
 	public void setTable(String table) {
 		this.table = table;
 	}
 
+	// Returns the table name
 	public String getTable() {
 		return this.table;
 	}
-	
-	public String getText(){
+
+	// Gets the text of this item
+	public String getText() {
 		return this.text;
 	}
-	
-	public int getTripID(){
+
+	// Returns trip id of the Trip associated with this item
+	public int getTripID() {
 		return this.trip.getID();
 	}
-	
-	public String toString(){
+
+	// To String method for a trip list item
+	public String toString() {
 		return this.getTripID() + " " + this.getTable() + " " + this.text;
 	}
-	
-	public int getIndex(){
+
+	// Returns the index value of this item
+	public int getIndex() {
 		return this.Index;
 	}
-	
-	public boolean isChecked(){
+
+	// Returns true if the item is checked
+	public boolean isChecked() {
 		return this.checked;
-	} 
-	
-	public void setTrip(Trip t){
+	}
+
+	// Sets the trip of this item
+	public void setTrip(Trip t) {
 		this.trip = t;
 	}
-	
+
 }

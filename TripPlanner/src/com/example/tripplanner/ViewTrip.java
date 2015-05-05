@@ -1,3 +1,4 @@
+/**The View trip extends New Trip in order to inherit all of its methods*/
 package com.example.tripplanner;
 
 import java.util.Calendar;
@@ -25,12 +26,13 @@ public class ViewTrip extends NewTrip {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		// Gets the trip name from prior intent and stores values to edit texts
 		Bundle extras = this.getIntent().getExtras();
 		if (extras != null) {
+
 			String tripName = extras.getString("trip_name");
 			super.activeTrip = super.helper.getTripByName(tripName);
 		}
-
 		super.tripName.setText(super.activeTrip.getName());
 		super.destination.setText(super.activeTrip.getDestination());
 		super.startDate.setText(convertDate(super.activeTrip.getDateStart()));
@@ -40,7 +42,7 @@ public class ViewTrip extends NewTrip {
 
 	}
 
-	// This method overrides the NewTrip saveTrip method. It creates updates the
+	// This method overrides the NewTrip saveTrip method. It updates the
 	// current trip instead of creating a new one
 	@Override
 	public void saveTrip(boolean toast) {
@@ -58,7 +60,7 @@ public class ViewTrip extends NewTrip {
 
 	}
 
-	// Sends user to pack list
+	// Sends user to pack list and passes the trip id
 	@Override
 	public void goToPackList() {
 		if (isComplete()) {
@@ -92,6 +94,7 @@ public class ViewTrip extends NewTrip {
 		return true;
 	}
 
+	// Handles the options menu
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int itemId = item.getItemId();
@@ -106,7 +109,7 @@ public class ViewTrip extends NewTrip {
 
 		switch (itemId) {
 
-		// Send Trip via Email
+		// Send Trip details via Email
 		case PICK1:
 			Intent email = new Intent(Intent.ACTION_SEND);
 			email.setType("message/rfc822");
@@ -119,7 +122,7 @@ public class ViewTrip extends NewTrip {
 
 			return true;
 
-			// Send Trip via SMS
+			// Send Trip details via SMS
 		case PICK2:
 			Intent sms = new Intent(Intent.ACTION_VIEW);
 			sms.setType("vnd.android-dir/mms-sms");
@@ -132,7 +135,7 @@ public class ViewTrip extends NewTrip {
 		return false;
 	}
 
-	// When you go back, you return to main screen
+	// When you go back, you return to main screen instead of NewTrip Activity
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		Intent i = new Intent(this, MainActivity.class);

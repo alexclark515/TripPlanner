@@ -1,10 +1,8 @@
-//This is for the pack list activity
-
+/**The PackList activity is called when the pack list is opened*/
 package com.example.tripplanner;
 
 import java.util.ArrayList;
 import java.util.Locale;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -53,6 +51,8 @@ public class PackingList extends ListActivity implements OnClickListener,
 	private boolean isNewItem = true;
 	ListView list;
 
+	// Method called to set the list type (pack or to do) this is used for
+	// writing to the database
 	public void setList(Trip t) {
 		tripList = helper.loadList(t, "pack");
 	}
@@ -62,9 +62,15 @@ public class PackingList extends ListActivity implements OnClickListener,
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.packing_list);
 		list = (ListView) findViewById(android.R.id.list);
+
+		// Permits context menu
 		list.setLongClickable(true);
 		registerForContextMenu(list);
+
+		// Instantiates SQL Helper
 		helper = new SQLHelper(this);
+
+		// ArrayList adapter for list of packing items
 		adapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_list_item_checked, items);
 		setListAdapter(adapter);
@@ -84,12 +90,12 @@ public class PackingList extends ListActivity implements OnClickListener,
 			this.setList(activeTrip);
 		}
 
-		// Dummy Code
+		// Calls the method to refresh this list
 		this.refreshList();
 		/****************************************************************/
 	}
 
-	// Refreshes list and notifies adapter
+	// Clears items in list, adds all items to list and notifies adapter
 	public void refreshList() {
 		items.clear();
 		for (int i = 0; i < tripList.size(); i++) {
@@ -130,12 +136,15 @@ public class PackingList extends ListActivity implements OnClickListener,
 		}
 	}
 
+	// When the activity is paused, the list is saved
 	protected void onPause() {
 		this.saveList();
 		super.onPause();
 
 	}
 
+	// When the activity is resumed, this retrieves the active trip id from the
+	// database
 	protected void onResume() {
 		super.onResume();
 		extras = this.getIntent().getExtras();
@@ -147,6 +156,7 @@ public class PackingList extends ListActivity implements OnClickListener,
 		this.refreshList();
 	}
 
+	// Saves list when this activity is stopped
 	protected void onStop() {
 		this.saveList();
 		super.onStop();
@@ -193,6 +203,8 @@ public class PackingList extends ListActivity implements OnClickListener,
 		speaker.speak(output, TextToSpeech.QUEUE_FLUSH, null);
 	}
 
+	// If the item in the text view is a new item, then a new item is created.
+	// If the user is changing an item, it updates that item
 	@Override
 	public void onClick(View v) {
 		if (isNewItem) {
@@ -202,6 +214,7 @@ public class PackingList extends ListActivity implements OnClickListener,
 		}
 	}
 
+	// Context menu for editing and deleting items
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
@@ -213,12 +226,17 @@ public class PackingList extends ListActivity implements OnClickListener,
 		}
 	}
 
+	// Handles context menu input
 	public boolean onContextItemSelected(MenuItem item) {
 		super.onContextItemSelected(item);
 
+		// Calls method to delete item at the acmi posistin
 		if (item.getTitle().toString().equals("Delete")) {
 			this.deleteItem(acmi.position);
 		}
+		// When the user wishes to edit an item, the text is placed in the edit
+		// text, and the text on the button is changed to save, and the boolean
+		// value of isNewItem is changed to false
 		if (item.getTitle().toString().equals("Edit")) {
 			input.setText(tripList.get(acmi.position).getText());
 			btnAdd.setText("Save");
@@ -228,6 +246,8 @@ public class PackingList extends ListActivity implements OnClickListener,
 		return false;
 	}
 
+	// Method used to delete an item. Removes it from list, saves the list
+	// (writes it to the database), speaks the text, and refreshes the list
 	public void deleteItem(int i) {
 		tripList.remove(i);
 		this.speak("item deleted");
@@ -235,6 +255,9 @@ public class PackingList extends ListActivity implements OnClickListener,
 		this.refreshList();
 	}
 
+	// Method to change an item. Gets the new text, speaks, "item updated",
+	// resets the edit text, changes the ArrayList text, resets the button text
+	// to "Add", resets the isNewItem to true, saves the list and refreshes it
 	public void changeItem() {
 		String newItem = input.getText().toString();
 		this.speakText("item updated");
@@ -246,6 +269,8 @@ public class PackingList extends ListActivity implements OnClickListener,
 		this.refreshList();
 	}
 
+	// Method to add new item. Speaks text, resets edit text, adds item to trip
+	// list, saves to database, and refreshes list
 	public void addNewItem() {
 		String newItem = input.getText().toString();
 		if (!(newItem.equals(""))) {
@@ -257,6 +282,7 @@ public class PackingList extends ListActivity implements OnClickListener,
 		}
 	}
 
+	// Method to handle speaking of text
 	public void speakText(String t) {
 		if (speaker.isSpeaking()) {
 			speaker.stop();

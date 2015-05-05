@@ -1,3 +1,5 @@
+/**This class handles the google maps activity*/
+
 package com.example.tripplanner;
 
 import java.util.List;
